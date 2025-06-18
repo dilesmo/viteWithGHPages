@@ -22,15 +22,24 @@ jobs:
         with:
           node-version: "20"
 
-      # 3. Установка зависимостей
+      # 3. Кэширование зависимостей
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      # 4. Установка зависимостей
       - name: Install dependencies
         run: npm ci
 
-      # 4. Сборка проекта
+      # 5. Сборка проекта
       - name: Build project
         run: npm run build
 
-      # 5. Деплой на GitHub Pages
+      # 6. Деплой на GitHub Pages
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
